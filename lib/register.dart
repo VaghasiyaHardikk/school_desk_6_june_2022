@@ -9,7 +9,7 @@ class register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.amber,
+        statusBarColor: Color.fromARGB(255, 255, 204, 0),
         systemNavigationBarDividerColor: Colors.white,
         systemNavigationBarColor: Colors.white,
         systemNavigationBarIconBrightness: Brightness.dark));
@@ -102,7 +102,7 @@ class register extends StatelessWidget {
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.amber,
+                    primary: Color.fromARGB(255, 255, 204, 0),
                     elevation: 1,
                     minimumSize: const Size(70, 55),
                     shape: RoundedRectangleBorder(

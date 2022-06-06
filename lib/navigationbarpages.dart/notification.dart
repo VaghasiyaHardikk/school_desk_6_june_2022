@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rbkei/api/notification_refresh.dart';
+import 'package:rbkei/api/notification_refresh.dart';
 
 class notification extends StatefulWidget {
   const notification({Key? key}) : super(key: key);
@@ -21,12 +24,12 @@ class _notificationState extends State<notification> {
       builder: (BuildContext context, child) => Theme(
         data: ThemeData().copyWith(
           colorScheme: ColorScheme.dark(
-              primary: Colors.amber,
+              primary: Color.fromARGB(255, 255, 204, 0),
               onPrimary: Colors.white,
-              surface: Colors.amber,
-              onPrimaryContainer: Colors.orangeAccent,
+              surface: Color.fromARGB(255, 255, 204, 0),
+              onPrimaryContainer: Color.fromARGB(255, 255, 204, 0),
               onSurface: Colors.white),
-          dialogBackgroundColor: Colors.white12,
+          dialogBackgroundColor: Color.fromARGB(153, 0, 0, 0),
         ),
         child: Center(child: child),
       ),
@@ -39,10 +42,11 @@ class _notificationState extends State<notification> {
 
   @override
   Widget build(BuildContext context) {
+    var notification_refresh;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 75,
-        backgroundColor: Colors.amber,
+        backgroundColor: Color.fromARGB(255, 255, 204, 0),
         elevation: 1,
         foregroundColor: Colors.white,
         title: Container(
@@ -52,13 +56,13 @@ class _notificationState extends State<notification> {
           width: 330,
           child: Center(
             child: TextField(
-              cursorColor: Colors.amber,
+              cursorColor: Color.fromARGB(255, 255, 204, 0),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: 'Search',
                 prefixIcon: Icon(
                   Icons.search,
-                  color: Colors.amber,
+                  color: Color.fromARGB(255, 255, 204, 0),
                 ),
               ),
             ),
@@ -97,6 +101,21 @@ class _notificationState extends State<notification> {
             ),
           )
         ],
+      ),
+      body: Container(
+        child: Padding(
+          padding: const EdgeInsets.all(45.0),
+          child: IconButton(
+            icon: new Icon(
+              FontAwesomeIcons.rotate,
+              color: Color.fromARGB(255, 255, 204, 0),
+              size: 30,
+            ),
+            onPressed: notification_refresh,
+            
+          ),
+        ),
+        alignment: Alignment.bottomRight,
       ),
     );
   }

@@ -1,23 +1,97 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rbkei/MainPages/announcement.dart';
 import 'package:rbkei/MainPages/calendar.dart';
 import 'package:rbkei/MainPages/portfolios.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:rbkei/api/public_information.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import '../MainPages/portfolios.dart';
+
 
 class navhome extends StatefulWidget {
+  
+  
   const navhome({Key? key}) : super(key: key);
   @override
   State<navhome> createState() => _navhomeState();
 }
 
+
+class Data {
+  final int ID;
+  final int MenuName;
+  final String MenuUrlPath;
+  final String Employee;
+  final String MenuIconName;
+  final String Student;
+  
+  
+  Data({
+    required this.ID,
+    required this.MenuName,
+    required this.MenuUrlPath,
+    required this.Employee,
+    required this.MenuIconName,
+    required this.Student,
+  });
+
+  factory Data.fromMap(Map<String, dynamic> json) => Data(
+        ID: json["ID"],
+        MenuName: json["MenuName"],
+        MenuUrlPath: json["MenuUrlPath"],
+        Employee: json["Employee"],
+        MenuIconName: json["MenuIconName"],
+        Student: json["Student"]
+      );
+      late List<Data> data;
+
+}
+
 class _navhomeState extends State<navhome> {
-  _launchURLApp() async {
-    const url = 'https://rbkei.org/privacy_policy/';
-    if (await canLaunch(url)) {
-      await launch(url, forceSafariVC: true, forceWebView: true);
-    } else {
-      throw 'Could not launch $url';
-    }
+   
+  var ID;
+
+  var MenuName;
+
+  var Employee;
+
+  var MenuUrlPath;
+
+  var MenuIconName;
+
+  var Student;
+
+  void Data(
+    String ID,
+    MenuName,
+    Employee,
+    MenuUrlPath,
+    MenuIconName,
+    Student, String string
+  )async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+     http.Response response =
+      await http.get(Uri.parse('https://project.rbkei.org/SchoolDesk/SDAppMenus.json'),
+      );
+      print('Response status: ${response.statusCode}');
+print('Response body: ${response.body}');
+  if (response.statusCode == 200) {
+    var data = jsonDecode(response.body.toString());
+         print(data['MenuName']);
+
+        print('sucessfull');
+      } else {
+        print('failed');
+      }
+}
+  
+@override
+  void initState() {
+   
+    super.initState();
   }
 
   @override
@@ -42,13 +116,27 @@ class _navhomeState extends State<navhome> {
                         borderRadius: BorderRadius.circular(12),
                         color: Color.fromARGB(189, 236, 236, 236),
                         child: InkWell(
-                          onTap: () {
-                            // callLoginApi();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => portfolios()),
+                          onTap: () async {
+                            // var url = Uri.parse('https://project.rbkei.org/SchoolDesk/SDAppMenus.json');
+                            // var response = await http.get(url);
+                            // print('Response status: ${response.statusCode}');
+                            // print('Response body: ${response.body}');
+                            // var data = jsonDecode(response.body);
+                            
+                           
+                           Navigator.push(context, MaterialPageRoute(builder: (context) =>  portfolios(),));
+                            
+                            Data(
+                              ID.toString(),
+                              MenuName.toString(),
+                              MenuUrlPath.toString(),
+                              Employee.toString(),
+                              MenuIconName.toString(),
+                              Student.toString(),
+                              Data.toString(),
                             );
+                           
+                            
                           },
                           child: SingleChildScrollView(
                             child: Container(
@@ -64,7 +152,7 @@ class _navhomeState extends State<navhome> {
                                     const Icon(
                                       FontAwesomeIcons.userGear,
                                       size: 51,
-                                      color: Colors.amber,
+                                      color: Color.fromARGB(255, 255, 204, 0),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(top:30.0),
@@ -105,7 +193,7 @@ class _navhomeState extends State<navhome> {
                                     const Icon(
                                       FontAwesomeIcons.calendarDays,
                                       size: 51,
-                                      color: Colors.amber,
+                                      color: Color.fromARGB(255, 255, 204, 0),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(top:30.0),
@@ -142,7 +230,7 @@ class _navhomeState extends State<navhome> {
                                     const Icon(
                                       FontAwesomeIcons.graduationCap,
                                       size: 51,
-                                      color: Colors.amber,
+                                      color: Color.fromARGB(255, 255, 204, 0),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(top:30.0),
@@ -180,7 +268,7 @@ class _navhomeState extends State<navhome> {
                                     const Icon(
                                       FontAwesomeIcons.calendarDays,
                                       size: 51,
-                                      color: Colors.amber,
+                                      color: Color.fromARGB(255, 255, 204, 0),
                                     ),
                                 
                                        Container(
@@ -219,7 +307,7 @@ class _navhomeState extends State<navhome> {
                                     const Icon(
                                       FontAwesomeIcons.userTie,
                                       size: 51,
-                                      color: Colors.amber,
+                                      color: Color.fromARGB(255, 255, 204, 0),
                                     ),
                                        Container(
                                          padding: EdgeInsets.only(top: 30),
@@ -240,7 +328,8 @@ class _navhomeState extends State<navhome> {
                         color: Color.fromARGB(189, 236, 236, 236),
                         child: InkWell(
                           onTap: () {
-                            print('1 was clicked');
+                            
+                            Navigator.push(context, MaterialPageRoute(builder: (context) =>  MyApp(),));
                           },
                           child: SingleChildScrollView(
                             child: Container(
@@ -256,8 +345,9 @@ class _navhomeState extends State<navhome> {
                                     const Icon(
                                       FontAwesomeIcons.scroll,
                                       size: 51,
-                                      color: Colors.amber,
+                                      color: Color.fromARGB(255, 255, 204, 0),
                                     ),
+                                    
                                        Container(
                                          padding: EdgeInsets.only(top: 30),
                                          child: Text(
@@ -275,16 +365,17 @@ class _navhomeState extends State<navhome> {
                   ),
                   InkWell(
                     onTap: () {
-                      _launchURLApp();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => public_information(),));
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      width: 400,
-                      height: 260,
+                      width: 410,
+                      height: 230,
                       decoration: BoxDecoration(
+                        boxShadow: [BoxShadow(color: Color.fromARGB(255, 255, 204, 0))],
                         color: Colors.transparent,
                         image: DecorationImage(
-                          image: AssetImage('assets/privacypolicy.png'),
+                          image: AssetImage('assets/public information.png'),
                         ),
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -298,4 +389,5 @@ class _navhomeState extends State<navhome> {
       ),
     );
   }
+
 }

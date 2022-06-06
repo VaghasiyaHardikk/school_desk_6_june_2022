@@ -94,18 +94,3 @@ class _privacyState extends State<privacy> {
     );
   }
 }
-
-//     return Scaffold(
-//       resizeToAvoidBottomInset: false,
-//       body: Center(
-//         child: Container(
-//           decoration: const BoxDecoration(
-//             image: DecorationImage(
-//               image: AssetImage('assets/background.png'),
-//               fit: BoxFit.cover,
-//             ),
-//           ),
-      
-//     )));
-//   }
-// }

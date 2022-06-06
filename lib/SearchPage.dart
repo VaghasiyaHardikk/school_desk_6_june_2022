@@ -9,7 +9,7 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.amber,
+          backgroundColor: Color.fromARGB(255, 255, 204, 0),
           elevation: 2,
           toolbarHeight: 67.0,
           // The search area here

@@ -16,12 +16,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         backgroundColor: Colors.grey,
-        scaffoldBackgroundColor: const Color(0xFFFCFFFF),
-        primaryColor: Colors.amber,
+        scaffoldBackgroundColor: Colors.white,
+        primaryColor: Colors.white,
       ),
       home: Home(
        ),
     );
   }
+
+
+  static init() {}
 }
 

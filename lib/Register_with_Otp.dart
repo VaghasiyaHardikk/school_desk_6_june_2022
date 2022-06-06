@@ -8,7 +8,7 @@ class Register_with_Otp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.amber,
+        statusBarColor: Color.fromARGB(255, 255, 204, 0),
         systemNavigationBarDividerColor: Colors.white,
         systemNavigationBarColor: Colors.white,
         systemNavigationBarIconBrightness: Brightness.dark));
@@ -58,7 +58,7 @@ class Register_with_Otp extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 30, right: 30, top: 27),
                 decoration: const BoxDecoration(),
                 child: const TextField(
-                  cursorColor: Colors.amber,
+                  cursorColor: Color.fromARGB(255, 255, 204, 0),
                   decoration: InputDecoration(
                     labelText: 'E-mail / Number / User Login',
                     hintText: '****',
@@ -82,7 +82,7 @@ class Register_with_Otp extends StatelessWidget {
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.amber,
+                    primary: Color.fromARGB(255, 255, 204, 0),
                     elevation: 1,
                     minimumSize: const Size(70, 55),
                     shape: RoundedRectangleBorder(
@@ -130,7 +130,7 @@ class Register_with_Otp extends StatelessWidget {
               ////////////////////////////////Registeration//////////////////////////////////
               TextButton(
                 style: TextButton.styleFrom(
-                  primary: Colors.amber,
+                  primary: Color.fromARGB(255, 255, 204, 0),
                 ),
                 onPressed: () {
                   Navigator.push(

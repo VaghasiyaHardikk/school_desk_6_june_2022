@@ -1,82 +1,209 @@
 import 'dart:convert';
-import 'package:rbkei/home.dart';
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:rbkei/Home_Page.dart';
+import 'package:rbkei/api/google_signin_api.dart';
+import 'package:rbkei/main.dart';
 import 'package:rbkei/register.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Register_with_Otp.dart';
+import 'package:form_field_validator/form_field_validator.dart';
+
 
 class Home extends StatefulWidget {
+  static Future init() async {
+    final pref = await SharedPreferences.getInstance();
+    if (!pref.containsKey('userData')) {
+      return false;
+    }
+  }
+
   @override
   State<Home> createState() => _HomeState();
 }
-class _HomeState extends State<Home> {
+///////////////////////Sign in With Google//////////////////////////////
+googleLogin() async {
+  GoogleSignIn _googleSignIn = GoogleSignIn();
+  try {
+    var result = await _googleSignIn.signIn();
+    print(result);
+  } catch (error) {
+    print(error);
+  }
+}
 
-  ///////////////////////Login Api///////////////////////////
-  final UserNameController = TextEditingController();
-  final passwordController = TextEditingController();
-  
-  var  SerialNumber ;
-  
+Future signIn() async {
+  final user = await GoogleSignInApi();
+}
+var UserName;
+  var password;
+  var SerialNumber;
   var SessionHostId;
-  
-  var HostMAC ;
-  
-  var HostName ;
-  
-  var LastSeen ;
-  
-  var LocalIP ;
-  
-  var LoginProvider ;
-  
-  var NotificationToken ;
-  
-  var ProviderKey ;
-  
-  var PublicIP ;
-
-  void login(String UserName , Password, SerialNumber, SessionHostId, HostName, HostMAC,
-   LoginProvider, ProviderKey, LastSeen, PublicIP, LocalIP, NotificationToken) async {
-
+  var HostMAC;
+  var HostName;
+  var LastSeen;
+  var LocalIP;
+  var LoginProvider;
+  var key;
+  var ProviderKey;
+  var PublicIP;
+  void Google(
+      String UserName,
+      Password,
+      SerialNumber,
+      SessionHostId,
+      HostName,
+      HostMAC,
+      LoginProvider,
+      ProviderKey,
+      LastSeen,
+      PublicIP,
+      LocalIP,
+      key) async {
+    // ignore: unused_local_variable
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     try {
       Response response = await post(
-        Uri.parse('https://mtestsd.rbkei.in/api/CreateTokan'),
-        body: {
-          'UserName' : UserName,
-          'Password' : Password,
-          'SerialNumber' : SerialNumber,
-          'SessionHostId' : SessionHostId,
-          'HostName' : HostName,
-          'HostMAC' : HostMAC,
-          'LoginProvider' : LoginProvider,
-          'ProviderKey' : ProviderKey,
-          'LastSeen' : LastSeen,
-          'PublicIP' : PublicIP,
-          'LocalIP' : LocalIP,
-          'NotificationToken' :  NotificationToken
-        }
-      );
-      if (response.statusCode == 200){
-        var data =jsonDecode(response.body.toString());
+          Uri.parse('https://mtestsd.rbkei.in/api/LoginWithSocialNetworking'),
+          body: {
+            'UserName': UserName,
+            'Password': Password,
+            'SerialNumber': SerialNumber,
+            'SessionHostId': SessionHostId,
+            'HostName': HostName,
+            'HostMAC': HostMAC,
+            'LoginProvider': LoginProvider,
+            'ProviderKey': ProviderKey,
+            'LastSeen': LastSeen,
+            'PublicIP': PublicIP,
+            'LocalIP': LocalIP,
+            'key': key
+          });
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body.toString());
         print(data);
-        print('success');
-      } else{
+
+        print('Login');
+      } else {
         print('failed');
       }
-      
+      } catch (e) {
+      print(e.toString());
+    }
+  }
+
+late SharedPreferences loginData;
+
+class _HomeState extends State<Home> {
+  bool isHiddenPassword = true;
+  GlobalKey <FormState> formkey = GlobalKey<FormState>();
+
+  late SharedPreferences localStorage;
+  
+  ///////////////////////Login Api//////////////////////////
+
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    check_if_aldready_login();
+  }
+
+    var UserName;
+    var password;
+    var SerialNumber;
+    var SessionHostId;
+    var HostMAC;
+    var HostName;
+    var LastSeen;
+    var LocalIP;
+    var LoginProvider;
+    var NotificationToken;
+    var ProviderKey;
+    var PublicIP;
+
+    void login(
+        String UserName,
+        Password,
+        SerialNumber,
+        SessionHostId,
+        HostName,
+        HostMAC,
+        LoginProvider,
+        ProviderKey,
+        LastSeen,
+        PublicIP,
+        LocalIP,
+        NotificationToken) async {
+      // ignore: unused_local_variable
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      try {
+        Response response = await post(
+            Uri.parse('https://mtestsd.rbkei.in/api/CreateTokan'),
+            body: {
+              'UserName': UserName,
+              'Password': Password,
+              'SerialNumber': SerialNumber,
+              'SessionHostId': SessionHostId,
+              'HostName': HostName,
+              'HostMAC': HostMAC,
+              'LoginProvider': LoginProvider,
+              'ProviderKey': ProviderKey,
+              'LastSeen': LastSeen,
+              'PublicIP': PublicIP,
+              'LocalIP': LocalIP,
+              'NotificationToken': NotificationToken
+            });
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body.toString());
+          print(data);
+
+          print('Login');
+        } else {
+          print('failed');
+        }
+
+      // final pref = await SharedPreferences.getInstance();
+      // final userData = json.encode({
+      //   'UserName': UserName,
+      //   'Password': Password,
+      //   'SerialNumber': SerialNumber,
+      //   'SessionHostId': SessionHostId,
+      //   'HostName': HostName,
+      //   'HostMAC': HostMAC,
+      //   'LoginProvider': LoginProvider,
+      //   'ProviderKey': ProviderKey,
+      //   'LastSeen': LastSeen,
+      //   'PublicIP': PublicIP,
+      //   'LocalIP': LocalIP,
+      //   'NotificationToken': NotificationToken,
+      // });
+      // pref.setString(userData, userData);
+      // print('check' + userData.toString());
     } catch (e) {
       print(e.toString());
     }
   }
-////////////////////////////Login Api End////////////////////////////////
+
  
+////////////////////////////Login Api End////////////////////////////////
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.amber,
+        statusBarColor: Color.fromARGB(255, 255, 204, 0),
         systemNavigationBarDividerColor: Colors.white,
         systemNavigationBarColor: Colors.white,
         systemNavigationBarIconBrightness: Brightness.dark));
@@ -88,6 +215,8 @@ class _HomeState extends State<Home> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Center(
+        child: Form(
+        autovalidateMode: AutovalidateMode.always,
         child: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -120,7 +249,8 @@ class _HomeState extends State<Home> {
                         child: AutoSizeText(
                           'SCHOOL DESK',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 18, letterSpacing: 5),
+                          style:
+                              const TextStyle(fontSize: 18, letterSpacing: 5),
                         ),
                       ),
                       const Padding(
@@ -135,12 +265,16 @@ class _HomeState extends State<Home> {
 
                   ///////////////////*Email*/////////////////
                   Container(
-                    padding: const EdgeInsets.only(left: 30, right: 30, top: 27),
+                    padding:
+                        const EdgeInsets.only(left: 30, right: 30, top: 27),
                     decoration: const BoxDecoration(),
-                    child: TextField(
-                      controller: UserNameController,
+                    
+                    child: TextFormField(
+                      key: formkey,
+                      controller: usernameController,
                       keyboardType: TextInputType.emailAddress,
-                      cursorColor: Colors.amber,
+                      autofillHints: [AutofillHints.email],
+                      cursorColor: Color.fromARGB(255, 255, 204, 0),
                       decoration: InputDecoration(
                         labelText: 'Your E-mail',
                         hintText: 'abc@gmail.com',
@@ -154,9 +288,14 @@ class _HomeState extends State<Home> {
                           borderRadius: BorderRadius.all(Radius.circular(27)),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(27),
-                          borderSide: BorderSide(color: Colors.black45)
-                        ),
+                            borderRadius: BorderRadius.circular(27),
+                            borderSide: BorderSide(color: Colors.black45)),
+                      ),
+                      validator: MultiValidator(
+                        [
+                          RequiredValidator(errorText: "Requires @gmail.com"),
+                          EmailValidator(errorText: "Wrong Email"),
+                        ]
                       ),
                     ),
                   ),
@@ -164,88 +303,87 @@ class _HomeState extends State<Home> {
                   ////////////////////*Password*////////////////////
 
                   Container(
-                    padding: const EdgeInsets.only(left: 30, right: 30, top: 27),
+                    padding:
+                        const EdgeInsets.only(left: 30, right: 30, top: 27),
                     decoration: const BoxDecoration(),
-                    child: TextField(
+                    child: TextFormField(
                       controller: passwordController,
                       keyboardType: TextInputType.text,
-                      cursorColor: Colors.amber,
-                      obscureText: true,
+                      cursorColor: Color.fromARGB(255, 255, 204, 0),
+                      obscureText: isHiddenPassword,
                       decoration: InputDecoration(
-                        hoverColor: Colors.amber,
-                        labelText: 'Password:',
-                        hintText: '****',
-                        suffixIcon: InkWell(child: Icon(Icons.visibility)),
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelStyle: TextStyle(color: Colors.black45, fontSize: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(27)),
+                          hoverColor: Color.fromARGB(255, 255, 204, 0),
+                          labelText: 'Password:',
+                          hintText: '****',
+                          
+                          suffixIcon: InkWell(
+                            onTap: _togglePasswordView,
+                            child: Icon(Icons.visibility)),
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelStyle:
+                              TextStyle(color: Colors.black45, fontSize: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(27)),
+                          ),
+                          
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(27),
+                              borderSide: BorderSide(color: Colors.black45)),
+                            ),
+                          validator: MinLengthValidator(6, errorText: "At least 6 Character"),    
+                    ),
+                  ),
+
+                  /////////////////////// Login Button //////////////////////////////
+                  SizedBox(
+                    height: 5,
+                  ),
+                  GestureDetector(
+                    onTap:  () async {
+                                            
+                      var data;
+                      
+                      login(
+                        usernameController.text.toString(),
+                        passwordController.text.toString(),
+                        SerialNumber.toString(),
+                        SessionHostId.toString(),
+                        HostName.toString(),
+                        HostMAC.toString(),
+                        LoginProvider.toString(),
+                        ProviderKey.toString(),
+                        LastSeen.toString(),
+                        PublicIP.toString(),
+                        LocalIP.toString(),
+                        NotificationToken.toString(),
+                      );
+                      String UserName = usernameController.text;
+                      String password = passwordController.text;
+                      if (UserName != '' && password != '') {
+                        print('Successfull');
+                        loginData.setBool('data', false);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Home_Page()));
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 255, 204, 0),
+                            borderRadius: BorderRadius.circular(27)),
+                        child: Center(
+                          child: Text('Login'),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(27),
-                          borderSide: BorderSide(color: Colors.black45)
-                        )
+                        height: 50,
                       ),
                     ),
                   ),
-                  SizedBox(height: 5,),
-                    GestureDetector(
-                      onTap: () {
-                        login(UserNameController.text.toString(), 
-                        passwordController.text.toString(), 
-                        SerialNumber.toString(), 
-                        SessionHostId.toString(), 
-                        HostName.toString(), 
-                        HostMAC.toString(), 
-                        LoginProvider.toString(), 
-                        ProviderKey.toString(), 
-                        LastSeen.toString(), 
-                        PublicIP.toString(), 
-                        LocalIP.toString(), 
-                        NotificationToken.toString());
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(25.0),
-                        child: Container(
-                          decoration: BoxDecoration(color: Colors.amber,borderRadius: BorderRadius.circular(27)),
-                          child: Center(child: Text('Login'),),height: 50,),
-                      ),
-                    ),
 
-                  //////////////////////**Login button*/////////////////////////////
 
-                  // Padding(
-                  //   padding: const EdgeInsets.only(
-                  //     left: 30,
-                  //     right: 30,
-                  //     top: 27,
-                  //   ),
-                  //   child: ElevatedButton(
-                  //     style: ElevatedButton.styleFrom(
-                  //       primary: Colors.amber,
-                  //       elevation: 1,
-                  //       minimumSize: const Size(70, 55),
-                  //       shape: RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(30)),
-                  //     ),
-                  //     child: const AutoSizeText(
-                  //       'Login',
-                  //       style: TextStyle(
-                  //           fontSize: 19,
-                  //           fontWeight: FontWeight.w400,
-                  //           color: Colors.white),
-                  //     ),
-                  //     onPressed: () {
-                  //       // login(emailController.text.toString(),passwordController.text.toString());
-                  //       // callLoginApi();
-                  //       Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(builder: (context) => Home_Page()),
-                  //       );
-                  //     },
-                  //   ),
-                  // ),
 
                   ////////////////////////////////***////////////////////////////////
                   Padding(
@@ -293,7 +431,7 @@ class _HomeState extends State<Home> {
                               width: 0.1,
                             ),
                             borderRadius: BorderRadius.circular(100)),
-                        minimumSize: Size(0, 50),
+                        // minimumSize: Size(0, 50),
                       ),
                       icon: Icon(
                         FontAwesomeIcons.google,
@@ -303,7 +441,7 @@ class _HomeState extends State<Home> {
                         'Sign-In',
                         style: TextStyle(color: Colors.blueAccent),
                       ),
-                      onPressed: () {},
+                      onPressed: googleLogin,
                     ),
                   ),
 ////////////////////////////////////////////////////////////////////////////////
@@ -313,7 +451,7 @@ class _HomeState extends State<Home> {
                       style: TextStyle(color: Colors.blueAccent),
                     ),
                     style: TextButton.styleFrom(
-                      primary: Colors.amber,
+                      primary: Color.fromARGB(255, 255, 204, 0)
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -356,11 +494,6 @@ class _HomeState extends State<Home> {
                           primary: Colors.blueAccent,
                         ),
                         onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => Privacy_Policy()),
-                          // );
                         },
                       ),
                     ),
@@ -371,8 +504,40 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
+    )
     );
   }
+//////////////////password icon view start///////////////////
+  void _togglePasswordView(){
+    if(isHiddenPassword == true){
+      isHiddenPassword = false;
+    }else{
+      isHiddenPassword = true;
+    }
+    setState(() {
+      
+    });
+  }
+  //////////////////password icon view end///////////////////
+
+  void check_if_aldready_login() async {
+    loginData = await SharedPreferences.getInstance();
   }
 
- 
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+}
+
+save() async{
+  await MyApp.init();
+  var usernameController;
+  var localStorage;
+  localStorage.setString('username', usernameController.text.toString());
+  var passwordController;
+  localStorage.setString('password', passwordController.text.toString());
+
+}
